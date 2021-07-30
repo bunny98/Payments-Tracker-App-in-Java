@@ -62,17 +62,22 @@ public class Group {
             Balance pTop = positiveHeap.poll();
             Balance nTop = negativeHeap.poll();
 
-            res.put(nTop.userId, new Balance(pTop.userId, nTop.amount));
-
-            if(pTop.amount > nTop.amount){
-                positiveHeap.add(new Balance(pTop.userId, pTop.amount - nTop.amount));
+            double amountTransferred = Math.min(pTop.amount, nTop.amount);
+            double amountDiff = pTop.amount - nTop.amount;
+            if(amountDiff > 0){
+                positiveHeap.add(new Balance(pTop.userId, amountDiff));
+            }else if(amountDiff < 0){
+                negativeHeap.add(new Balance(nTop.userId, Math.abs(amountDiff)));
             }
+
+            res.put(nTop.userId, new Balance(pTop.userId, amountTransferred));
         }
 
         this.userBalances = res;
     }
 
     public void printGroupGraph(){
+        System.out.println("=====================");
         userBalances.forEach((userId, balance)->{
             User currUser = UserDB.getInstance().getUser(userId);
             User owedToUser = UserDB.getInstance().getUser(balance.userId);
@@ -81,6 +86,5 @@ public class Group {
             System.out.printf("%s OWES %s AMOUNT: %f \n", currUser.name, owedToUser.name, amount);
 
         });
-        System.out.println("=====================");
     }
 }
