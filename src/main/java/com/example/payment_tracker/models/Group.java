@@ -16,7 +16,6 @@ public class Group {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.users = users;
-        GroupDB.getInstance().addGroup(this);
     }
 
     public void addUser(User user){

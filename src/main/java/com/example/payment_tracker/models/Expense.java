@@ -20,8 +20,6 @@ public class Expense {
         this.groupId = group.id;
         this.title = title;
         this.userBalances = calculateUserBalances(group.id, userId, amount);
-        ExpensesDB.getInstance().addExpense(this);
-        group.calculateUserBalances();
     }
 
     private Map<String, Double> calculateUserBalances(String groupId, String userId, Integer amount){

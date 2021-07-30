@@ -37,6 +37,10 @@ public class UserDB {
         userList.add(user);
     }
 
+    public void addBulk(List<User> userList){
+        userList.forEach((user)->addUser(user));
+    }
+
     public void deleteUser(String id){
         userList.removeIf(user -> user.id.equals(id));
     }
