@@ -37,10 +37,10 @@ public class Group {
             double newAmount = amount + cummulativeUserBalances.get(userId);;
             cummulativeUserBalances.put(userId, newAmount);
         });
-        calculateGroupGraph(cummulativeUserBalances);
+        calculateGroupGraph();
     }
 
-    private void calculateGroupGraph(Map<String, Double> cummulativeUserBalances){
+    private void calculateGroupGraph(){
         PriorityQueue<Balance> positiveHeap = new PriorityQueue<Balance>
                                         (1, new BalanceComparator());
         PriorityQueue<Balance> negativeHeap = new PriorityQueue<Balance>
