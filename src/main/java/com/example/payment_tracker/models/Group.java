@@ -1,87 +1,38 @@
 package com.example.payment_tracker.models;
-import com.example.payment_tracker.databases.UserDB;
+import com.example.payment_tracker.algorithm.IGraphAlgorithm;
 
 import java.util.*;
 
 public class Group {
+    private final IGraphAlgorithm graphAlgorithm;
     public final String id;
     public final String title;
     public List<User> users;
-    public Map<String, Balance> userBalances;
-    private Map<String, Double> cummulativeUserBalances;
 
-    public Group(String title, List<User> users) {
+    public Group(IGraphAlgorithm graphAlgorithm, String title, List<User> users) {
         this.id = UUID.randomUUID().toString();
+        this.graphAlgorithm = graphAlgorithm;
         this.title = title;
         this.users = users;
-        this.cummulativeUserBalances =  new HashMap<>();
-        users.forEach((user)->{
-            cummulativeUserBalances.put(user.id, (double) 0);
-        });
+        this.graphAlgorithm.init(users);
     }
 
     public void addUser(User user){
         this.deleteUser(user.id);
         users.add(user);
-        cummulativeUserBalances.put(user.id, (double) 0);
+        this.graphAlgorithm.addUser(user);
     }
 
     public void deleteUser(String userId){
         users.removeIf(user -> user.id.equals(userId));
-        cummulativeUserBalances.remove(userId);
+        this.graphAlgorithm.deleteUser(userId);
     }
 
-    public void calculateUserBalances(Expense expense){
-        Map<String, Double> currExpenseUserBalances = expense.getUserBalances();
-        currExpenseUserBalances.forEach((userId, amount)->{
-            double newAmount = amount + cummulativeUserBalances.get(userId);;
-            cummulativeUserBalances.put(userId, newAmount);
-        });
-        calculateGroupGraph();
-    }
-
-    private void calculateGroupGraph(){
-        PriorityQueue<Balance> positiveHeap = new PriorityQueue<Balance>
-                                        (1, new BalanceComparator());
-        PriorityQueue<Balance> negativeHeap = new PriorityQueue<Balance>
-                                        (1, new BalanceComparator());
-
-        cummulativeUserBalances.forEach((key, value)->{
-            if(value < 0){
-                negativeHeap.add(new Balance(key, Math.abs(value)));
-            }else{
-                positiveHeap.add(new Balance(key, Math.abs(value)));
-            }
-        });
-
-        Map<String, Balance> res = new HashMap<>();
-        while(!positiveHeap.isEmpty() && !negativeHeap.isEmpty()){
-            Balance pTop = positiveHeap.poll();
-            Balance nTop = negativeHeap.poll();
-
-            double amountTransferred = Math.min(pTop.amount, nTop.amount);
-            double amountDiff = pTop.amount - nTop.amount;
-            if(amountDiff > 0){
-                positiveHeap.add(new Balance(pTop.userId, amountDiff));
-            }else if(amountDiff < 0){
-                negativeHeap.add(new Balance(nTop.userId, Math.abs(amountDiff)));
-            }
-
-            res.put(nTop.userId, new Balance(pTop.userId, amountTransferred));
-        }
-
-        this.userBalances = res;
+    public void computeGraph(Expense expense){
+        this.graphAlgorithm.computeGraph(expense);
     }
 
     public void printGroupGraph(){
-        System.out.println("=====================");
-        userBalances.forEach((userId, balance)->{
-            User currUser = UserDB.getInstance().getUser(userId);
-            User owedToUser = UserDB.getInstance().getUser(balance.userId);
-            double amount = balance.amount;
-
-            System.out.printf("%s OWES %s AMOUNT: %f \n", currUser.name, owedToUser.name, amount);
-
-        });
+        this.graphAlgorithm.printGraph();
     }
 }

@@ -4,8 +4,8 @@ import com.example.payment_tracker.databases.GroupDB;
 import com.example.payment_tracker.databases.UserDB;
 import com.example.payment_tracker.factories.ExpenseFactory;
 import com.example.payment_tracker.models.Group;
+import com.example.payment_tracker.algorithm.HeapGraphAlgorithm;
 import com.example.payment_tracker.models.User;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class PaymentTrackerApplication {
 		UserDB.getInstance().addBulk(userList);
 
 		//CREATE GROUP AND SAVE IT IN GROUP DATABASE
-		Group group = new Group("NEW GROUP", userList);
+		Group group = new Group(new HeapGraphAlgorithm(), "NEW GROUP", userList);
 		GroupDB.getInstance().addGroup(group);
 
 		//CREATE EXPENSES AND SEE HOW MUCH EACH PERSON OWES AT THE END OF EACH EXPENSE

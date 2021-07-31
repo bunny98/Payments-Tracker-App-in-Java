@@ -11,7 +11,7 @@ public class ExpenseFactory {
     public static Expense createObject(Group group, String title, String userId, int amount){
         Expense expense = new Expense(group.id, title, userId, amount);
         expenseDB.addExpense(expense);
-        group.calculateUserBalances(expense);
+        group.computeGraph(expense);
         return expense;
     }
 }
