@@ -1,7 +1,5 @@
 package com.example.payment_tracker.models;
 
-import com.example.payment_tracker.databases.UserDB;
-
 import java.util.UUID;
 
 public class User {

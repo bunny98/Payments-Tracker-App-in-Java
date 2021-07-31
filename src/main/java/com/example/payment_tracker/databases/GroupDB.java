@@ -1,6 +1,4 @@
 package com.example.payment_tracker.databases;
-
-import com.example.payment_tracker.models.Expense;
 import com.example.payment_tracker.models.Group;
 
 import java.util.ArrayList;

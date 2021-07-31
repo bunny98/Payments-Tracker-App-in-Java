@@ -15,11 +15,11 @@ public class Expense {
         return userBalances;
     }
 
-    public Expense(Group group, String title, String userId, Integer amount) {
+    public Expense(String groupId, String title, String userId, Integer amount) {
         this.id = UUID.randomUUID().toString();
-        this.groupId = group.id;
+        this.groupId = groupId;
         this.title = title;
-        this.userBalances = calculateUserBalances(group.id, userId, amount);
+        this.userBalances = calculateUserBalances(groupId, userId, amount);
     }
 
     private Map<String, Double> calculateUserBalances(String groupId, String userId, Integer amount){

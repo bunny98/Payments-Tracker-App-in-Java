@@ -1,6 +1,4 @@
 package com.example.payment_tracker.databases;
-
-import com.example.payment_tracker.models.Group;
 import com.example.payment_tracker.models.User;
 
 import java.util.ArrayList;

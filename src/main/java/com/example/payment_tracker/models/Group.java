@@ -1,7 +1,4 @@
 package com.example.payment_tracker.models;
-
-import com.example.payment_tracker.databases.ExpensesDB;
-import com.example.payment_tracker.databases.GroupDB;
 import com.example.payment_tracker.databases.UserDB;
 
 import java.util.*;
@@ -11,35 +8,35 @@ public class Group {
     public final String title;
     public List<User> users;
     public Map<String, Balance> userBalances;
+    private Map<String, Double> cummulativeUserBalances;
 
     public Group(String title, List<User> users) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.users = users;
+        this.cummulativeUserBalances =  new HashMap<>();
+        users.forEach((user)->{
+            cummulativeUserBalances.put(user.id, (double) 0);
+        });
     }
 
     public void addUser(User user){
         this.deleteUser(user.id);
         users.add(user);
+        cummulativeUserBalances.put(user.id, (double) 0);
     }
 
     public void deleteUser(String userId){
         users.removeIf(user -> user.id.equals(userId));
+        cummulativeUserBalances.remove(userId);
     }
 
-    public void calculateUserBalances(){
-        List<Expense> expenseList = ExpensesDB.getInstance().getGroupExpenses(this.id);
-        Map<String, Double> cummulativeUserBalances = new HashMap<>();
-        for(var expense: expenseList){
-            Map<String, Double> currExpenseUserBalances = expense.getUserBalances();
-            currExpenseUserBalances.forEach((userId, amount)->{
-                double newAmount = amount;
-                if(cummulativeUserBalances.containsKey(userId)){
-                    newAmount += cummulativeUserBalances.get(userId);
-                }
-                cummulativeUserBalances.put(userId, newAmount);
-            });
-        }
+    public void calculateUserBalances(Expense expense){
+        Map<String, Double> currExpenseUserBalances = expense.getUserBalances();
+        currExpenseUserBalances.forEach((userId, amount)->{
+            double newAmount = amount + cummulativeUserBalances.get(userId);;
+            cummulativeUserBalances.put(userId, newAmount);
+        });
         calculateGroupGraph(cummulativeUserBalances);
     }
 
