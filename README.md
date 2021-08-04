@@ -11,6 +11,14 @@ amongst the group members.
 3. **Balance, BalanceComparator** : Balance is a model class that stores the balance amount which a user has to pay to the other user. BalanceComparator is a comparator class used which sorts various Balance objects according to the balance amounts. 
 4. **HeapGraphAlgorithm** : It is an implementation of the **IGraphAlgorithm** interface which implements a heap based algorithm to calculate the optimize the total number of transactions needed to settle the current expenses in a group.
 5. **ExpenseFactory** : It is a factory class which creates Expenses, stores them in the ExpensesDB and recalculates the transactions required to settle this and all the previous expenses in a group.
-6. **PaymentTrackerApplication** : The main class which creates users, groups and expenses. Displays the optimized transactions requried to settle all the expenses in a group, in the following pattern:
-   <br> 
-   <USER1> OWES <USER2> --> <AMOUNT>
+6. **PaymentTrackerApplication** : The main class which creates users, groups and expenses. Displays the optimized transactions requried to settle all the expenses in a group, in the following pattern: \<USER1> OWES \<USER2> --> \<AMOUNT>
+
+### TO DOs
+
+- [x] Add Expenses
+- [x] Add Users in group with some expenses
+- [x] Divide Expenses Equally
+- [ ] Divide Expenses Unequally
+- [ ] Edit Expenses
+- [ ] Edit Group
+- [ ] Support for multiple currencies
